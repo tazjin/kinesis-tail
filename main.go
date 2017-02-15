@@ -14,7 +14,7 @@ import (
 var (
 	stream       = flag.String("stream", "your-stream", "your stream name")
 	region       = flag.String("region", "ap-northeast-1", "the AWS region where your Kinesis Stream is.")
-	iteratorType = flag.String("iterator-type", "TRIM_HORIZON", "iterator type. Choose from TRIM_HORIZON(default), AT_SEQUENCE_NUMBER, AT_TIMESTAMP or LATEST.")
+	iteratorType = flag.String("iterator-type", "LATEST", "iterator type. Choose from TRIM_HORIZON(default), AT_SEQUENCE_NUMBER, AT_TIMESTAMP or LATEST.")
 	interval     = flag.Duration("interval", 3*time.Second, "seconds for waiting next GetRecords request.")
 	startTime    = flag.String("start-time", "", "timestamp to start reading. only enable when iterator type is AT_TIMESTAMP. acceptable format is YYYY-MM-DDThh:mm:ss.sssTZD (RFC3339 format). For example, 2016-04-20T12:00:00+09:00 is acceptable.")
 )
