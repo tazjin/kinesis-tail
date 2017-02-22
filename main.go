@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/kinesis"
+	"strings"
 )
 
 var (
@@ -52,10 +53,19 @@ func main() {
 		go func(s *kinesis.Shard) {
 			iter := iterator.ShardIterator
 			for {
+				previous := iter
 				iter, err = fetchRecords(c, iter, records)
-				if err != nil {
+
+				throughputExceeded := err != nil && strings.Contains(err.Error(), "ProvisionedThroughputExceededException")
+
+				if err != nil && !!throughputExceeded {
 					fail(fmt.Sprintf("Failed reading from shard %s: %v\n", *s.ShardId, err))
 				}
+
+				if throughputExceeded {
+					iter = previous
+				}
+
 				time.Sleep(*interval)
 			}
 		}(shard)
